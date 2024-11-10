@@ -8,7 +8,7 @@ from helper import plot
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
-LR = 0.001  # Learning Rate
+LR = 0.001
 
 class Agent:
 
@@ -119,7 +119,7 @@ def train():
         final_move = agent.get_action(state_old)
 
         # Perform move and get new state
-        reward, done, score = game.play_step(final_move)
+        reward, done, score, stop_training = game.play_step(final_move)
         state_new = agent.get_state(game)
 
         # Train short memory
@@ -146,6 +146,11 @@ def train():
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores)
+
+        if stop_training:
+            print("Training stopped by user.")
+            agent.model.save()  # Save the model before exiting
+            break
 
 if __name__ == '__main__':
     train()

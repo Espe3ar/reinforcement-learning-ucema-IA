@@ -28,6 +28,7 @@ BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0, 0, 0)
 GRAY = (169, 169, 169)  # Color for obstacles
+GREEN = (0, 255, 0)      # Color for Stop button
 
 BLOCK_SIZE = 20
 SPEED = 40
@@ -47,6 +48,9 @@ class SnakeGameAI:
         self.max_obstacle_lifetime = 200  # Maximum lifespan in frames
         self.obstacle_frequency = 100     # Frames between new obstacles
         self.reset()
+        # Define Stop button properties
+        self.stop_button_rect = pygame.Rect(self.w - 110, 10, 100, 40)
+        self.stop_training = False  # Flag to indicate if training should stop
 
     def reset(self):
         # Initialize game state
@@ -64,6 +68,7 @@ class SnakeGameAI:
         self._place_food()
         # self._place_obstacles()  # Obstacles will be placed during the game
         self.frame_iteration = 0
+        self.stop_training = False  # Reset stop flag
 
     def _place_food(self):
         """Place food at a random location."""
@@ -88,11 +93,15 @@ class SnakeGameAI:
     def play_step(self, action):
         """Execute one game step."""
         self.frame_iteration += 1
-        # 1. Collect user input (handle quit event)
+        # 1. Collect user input (handle quit event and stop button)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if self.stop_button_rect.collidepoint(mouse_pos):
+                    self.stop_training = True
 
         # 2. Move the snake
         distance_to_food_before = self._distance(self.head, self.food)
@@ -105,7 +114,7 @@ class SnakeGameAI:
         if self.is_collision() or self.frame_iteration > 100 * len(self.snake):
             game_over = True
             reward = -10
-            return reward, game_over, self.score
+            return reward, game_over, self.score, self.stop_training
 
         # 4. Place new food or move snake
         distance_to_food_after = self._distance(self.head, self.food)
@@ -138,7 +147,7 @@ class SnakeGameAI:
         self.clock.tick(SPEED)
 
         # 6. Return reward, game over status, and score
-        return reward, game_over, self.score
+        return reward, game_over, self.score, self.stop_training
 
     def is_collision(self, pt=None):
         """Check if the snake collides with the wall, itself, or obstacles."""
@@ -174,6 +183,13 @@ class SnakeGameAI:
         # Draw Score
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
+
+        # Draw Stop Button
+        pygame.draw.rect(self.display, GREEN, self.stop_button_rect)
+        stop_text = font.render("Stop", True, BLACK)
+        text_rect = stop_text.get_rect(center=self.stop_button_rect.center)
+        self.display.blit(stop_text, text_rect)
+
         pygame.display.flip()
 
     def _move(self, action):
