@@ -9,6 +9,15 @@ class Linear_QNet(nn.Module):
         super().__init__()
         self.linear1 = nn.Linear(input_size, hidden_size)
         self.linear2 = nn.Linear(hidden_size, output_size)
+        
+        # Check if a model is already trained in model/ folder. If so, load it
+        model_folder_path = './model'
+        model_file_path = os.path.join(model_folder_path, 'model.pth')
+        if os.path.exists(model_file_path):
+            self.load_state_dict(torch.load(model_file_path, weights_only=False))
+            print("Model loaded from", model_file_path)
+        else:
+            print("No existing model found, starting fresh training...")
 
     def forward(self, x):
         x = F.relu(self.linear1(x))
@@ -58,9 +67,6 @@ class QTrainer:
 
             target[idx][torch.argmax(action[idx]).item()] = Q_new
     
-        # 2: Q_new = r + y * max(next_predicted Q value) -> only do this if not done
-        # pred.clone()
-        # preds[argmax(action)] = Q_new
         self.optimizer.zero_grad()
         loss = self.criterion(target, pred)
         loss.backward()
