@@ -1,3 +1,4 @@
+import os
 import torch
 import random
 import numpy as np
@@ -17,8 +18,28 @@ class Agent:
         self.epsilon = 0  # Exploration rate
         self.gamma = 0.9  # Discount rate
         self.memory = deque(maxlen=MAX_MEMORY)  # Memory for experience replay
-        self.model = Linear_QNet(11, 256, 3)  # Neural network model
+        
+        self.model = Linear_QNet(11, 256, 3)
+        
+        # Try to load existing model
+        model_path = './model/model.pth'
+        if os.path.exists(model_path):
+            print("Loading existing model...")
+            self.model.load_state_dict(torch.load(model_path, weights_only=False))
+        else:
+            print("No existing model found, starting fresh training...")
+
+        # Try to load memory
+        memory_path = './model/memory.pth'
+        if os.path.exists(memory_path):
+            print("Loading existing memory...")
+            self.memory = torch.load(memory_path, weights_only=False)
+        else:
+            print("No existing memory found, starting fresh training...")
+
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
+
+
 
     def get_state(self, game):
         head = game.snake[0]
@@ -149,7 +170,13 @@ def train():
 
         if stop_training:
             print("Training stopped by user.")
-            agent.model.save()  # Save the model before exiting
+            
+            # Save the model before exiting
+            torch.save(agent.model.state_dict(), './model/model.pth')
+
+            # Save memory
+            torch.save(agent.memory, './model/memory.pth')
+
             break
 
 if __name__ == '__main__':
