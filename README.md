@@ -1,10 +1,53 @@
-# Teach AI To Play Snake! Reinforcement Learning With PyTorch and Pygame
 
-In this Python Reinforcement Learning Tutorial series we teach an AI to play Snake! We build everything from scratch using Pygame and PyTorch. The tutorial consists of 4 parts:
+# Snake AI con Reinforcement Learning
 
-You can find all tutorials on my channel: [Playlist](https://www.youtube.com/playlist?list=PLqnslRFeH2UrDh7vUmJ60YrmWd64mTTKV)
+Este proyecto implementa un juego de Snake que utiliza aprendizaje por refuerzo (Reinforcement Learning) para entrenar una IA que juegue de forma autónoma.
 
-- Part 1: I'll show you the project and teach you some basics about Reinforcement Learning and Deep Q Learning.
-- Part 2: Learn how to setup the environment and implement the Snake game.
-- Part 3: Implement the agent that controls the game.
-- Part 4: Implement the neural network to predict the moves and train it.
+## Requisitos Previos
+
+### 1. Instalar Miniconda
+
+Miniconda es una versión ligera de Anaconda que incluye solo conda y sus dependencias.
+
+1. Descarga Miniconda para tu sistema operativo desde [aquí](https://docs.conda.io/en/latest/miniconda.html)
+
+2. Instala Miniconda:
+   - **Windows**: Ejecuta el instalador descargado
+   - **Linux/Mac**: Abre una terminal y ejecuta:
+     ```bash
+     bash Miniconda3-latest-Linux-x86_64.sh
+     ```
+     (Reemplaza el nombre del archivo según tu descarga)
+
+3. Verifica la instalación:
+   ```bash
+   conda --version
+   ```
+
+### 2. Crear y Activar el Entorno Virtual
+
+1. Clona este repositorio:
+   ```bash
+   git clone [URL-del-repositorio]
+   cd [nombre-del-repositorio]
+   ```
+
+2. Crea un nuevo entorno virtual:
+   ```bash
+   conda create --name snake-ai python=3.8
+   ```
+
+3. Activa el entorno:
+   - **Windows**:
+     ```bash
+     conda activate snake-ai
+     ```
+   - **Linux/Mac**:
+     ```bash
+     source activate snake-ai
+     ```
+
+### 3. Instalar Dependencias
+
+Con el entorno activado, instala las dependencias necesarias:
+
